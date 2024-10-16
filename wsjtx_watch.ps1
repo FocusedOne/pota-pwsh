@@ -40,6 +40,8 @@ while($UTCToday -eq (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))
 
         ### TODO: Verify rx station list is from at least today or maybe this hour.
         $RxStations = Get-Content -Path $AllTxt -Last 50 | %{$_.split(" ")[-2]} | Sort-Object -Unique
+        ### Want to show RX dB in the Received Spots list
+        Write-Host $RxStations
 
         ### TODO: Filter worked stations from list but only if they were worked on the current band and mode.
         $RxSpots = $Spots | ?{$_.activator -in $RxStations}
@@ -53,7 +55,7 @@ while($UTCToday -eq (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd"))
     {
         Write-Host
         Write-Host "Received spots:"
-        $RxSpots | Sort-Object activator | Format-Table activator,reference,name -HideTableHeaders | Out-Host
+        $RxSpots | Sort-Object activator | Format-Table activator,reference,name,dB -HideTableHeaders | Out-Host
         Write-Host "All spots:"
         $Spots | ?{$_.mode -like "FT*"} | Sort-Object frequency,mode,activator | Format-Table activator,reference,frequency,mode,spotTime -HideTableHeaders
     }
